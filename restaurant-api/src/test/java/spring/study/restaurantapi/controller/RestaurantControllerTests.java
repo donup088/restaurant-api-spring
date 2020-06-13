@@ -18,8 +18,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -84,5 +83,16 @@ class RestaurantControllerTests {
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());
+    }
+
+
+    @Test
+    public void update() throws Exception {
+        mvc.perform(patch("/restaurants/333")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Sea food\",\"address\":\"강남\"}"))
+                .andExpect(status().isOk());
+
+        verify(restaurantService).updateRestaurant(333L,"Sea food","강남");
     }
 }
