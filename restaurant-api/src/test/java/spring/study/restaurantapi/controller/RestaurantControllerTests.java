@@ -12,6 +12,7 @@ import spring.study.restaurantapi.domain.*;
 import spring.study.restaurantapi.service.RestaurantService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
@@ -35,7 +36,13 @@ class RestaurantControllerTests {
     @Test
     public void list() throws Exception {
         List<Restaurant>restaurants=new ArrayList<>();
-        restaurants.add(new Restaurant(1004L,"Bob zip","Seoul"));
+        Restaurant restaurant=Restaurant.builder()
+                .id(1004L)
+                .name("Bob zip")
+                .address("Seoul")
+                .build();
+        restaurants.add(restaurant);
+
         //가짜 객체 생성->@MockBean의 사용으로 controller만 테스트할 수 있게됨
         given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -49,11 +56,24 @@ class RestaurantControllerTests {
     }
 
     @Test
-    public void detail() throws Exception {
+    public void detailWithExisted() throws Exception {
+        Restaurant restaurant1=Restaurant.builder()
+                .id(1004L)
+                .name("Bob zip")
+                .address("Seoul")
+                .build();
 
-        Restaurant restaurant1=new Restaurant(1004L,"Bob zip","Seoul");
-        Restaurant restaurant2=new Restaurant(333L,"Sool zip","Seoul");
-        restaurant1.addMenuItem(new MenuItem("Kimchi"));
+        MenuItem menuItem=MenuItem.builder()
+                .name("Kimchi")
+                .build();
+
+        restaurant1.setMenuItems(Arrays.asList(menuItem));
+
+        Restaurant restaurant2=Restaurant.builder()
+                .id(333L)
+                .name("Sool zip")
+                .address("Seoul")
+                .build();
 
         given(restaurantService.getRestaurant(1004L)).willReturn(restaurant1);
         given(restaurantService.getRestaurant(333L)).willReturn(restaurant2);
@@ -74,25 +94,60 @@ class RestaurantControllerTests {
     }
 
     @Test
-    public void create() throws Exception {
+    public void detailWithNotExisted() throws Exception {
+        given(restaurantService.getRestaurant(10000L))
+                .willThrow(new RestaurantNotFoundException(10000L));
+
+        mvc.perform(get("/restaurants/10000"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
+    }
+
+    @Test
+    public void createWithValidData() throws Exception {
+        given(restaurantService.addRestaurant(any())).will(invocation -> {
+            Restaurant restaurant=invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1234L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+        });
+
         mvc.perform(post("/restaurants")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(" {\"name\":\"Dong\",\"address\":\"Seoul\"}"))
+                .content("{\"name\":\"Dong\",\"address\":\"Seoul\"}"))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location","/restaurants/null"))
+                .andExpect(header().string("location","/restaurants/1234"))
                 .andExpect(content().string("{}"));
 
         verify(restaurantService).addRestaurant(any());
     }
 
+    @Test
+    public void createWithInvalidData() throws Exception {
+        mvc.perform(post("/restaurants")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(" {\"name\":\"\",\"address\":\"\"}"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
-    public void update() throws Exception {
+    public void updateWithValidData() throws Exception {
         mvc.perform(patch("/restaurants/333")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\":\"Sea food\",\"address\":\"강남\"}"))
                 .andExpect(status().isOk());
 
         verify(restaurantService).updateRestaurant(333L,"Sea food","강남");
+    }
+
+    @Test
+    public void updateWithInvalidData() throws Exception {
+        mvc.perform(patch("/restaurants/333")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"\",\"address\":\"\"}"))
+                .andExpect(status().isBadRequest());
+
     }
 }
