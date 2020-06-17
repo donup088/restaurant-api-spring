@@ -10,12 +10,11 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    @Autowired
     RestaurantRepository restaurantRepository;
 
-    @Autowired
     MenuItemRepository menuItemRepository;
 
+    @Autowired
     public RestaurantService(RestaurantRepository restaurantRepository, MenuItemRepository menuItemRepository) {
         this.restaurantRepository=restaurantRepository;
         this.menuItemRepository=menuItemRepository;

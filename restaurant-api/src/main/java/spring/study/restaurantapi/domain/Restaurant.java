@@ -1,5 +1,6 @@
 package spring.study.restaurantapi.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ public class Restaurant {
     private String address;
 
     @Transient//DB에 저장되지 않음
+    @JsonInclude(JsonInclude.Include.NON_NULL)//넘겨주는 json데이터가 없는 경우 표시되지 않음
     private List<MenuItem> menuItems;
 
     public String getInformation() {
