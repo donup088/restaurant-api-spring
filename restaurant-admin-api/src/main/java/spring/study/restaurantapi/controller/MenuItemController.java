@@ -1,10 +1,7 @@
 package spring.study.restaurantapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import spring.study.restaurantapi.domain.MenuItem;
 import spring.study.restaurantapi.service.MenuItemService;
 
@@ -22,5 +19,9 @@ public class MenuItemController {
             @RequestBody List<MenuItem> menuItems){
         menuItemService.bulkUpdate(restaurantId,menuItems);
         return null;
+    }
+    @GetMapping("/restaurants/{restaurantId}/menuitems")
+    public List<MenuItem> list(@PathVariable("restaurantId")Long restaurantId){
+        return menuItemService.getMenuItems(restaurantId);
     }
 }

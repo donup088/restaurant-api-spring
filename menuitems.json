@@ -1,10 +1,11 @@
 [
   {
-    "id": 2,
-    "name": "coffee"
+    "name": "stake"
   },
   {
-    "id": 7,
-    "destroy": "true"
+    "name": "water"
+  },
+  {
+    "name": "salad"
   }
 ]

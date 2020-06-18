@@ -13,6 +13,7 @@ import spring.study.restaurantapi.service.MenuItemService;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,5 +35,13 @@ class MenuItemControllerTests {
                 .andExpect(status().isOk());
 
         verify(menuItemService).bulkUpdate(eq(1L), any());
+    }
+
+    @Test
+    public void list() throws Exception {
+        mvc.perform(get("/restaurants/1/menuitems"))
+                .andExpect(status().isOk());
+
+        verify(menuItemService).getMenuItems(1L);
     }
 }

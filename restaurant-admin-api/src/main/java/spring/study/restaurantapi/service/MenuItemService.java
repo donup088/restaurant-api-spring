@@ -35,6 +35,5 @@ public class MenuItemService {
 
     public List<MenuItem> getMenuItems(Long restaurantId) {
         return menuItemRepository.findAllByRestaurantId(restaurantId);
-
     }
 }
