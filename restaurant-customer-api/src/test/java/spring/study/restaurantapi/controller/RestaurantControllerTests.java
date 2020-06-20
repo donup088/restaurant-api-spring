@@ -39,15 +39,16 @@ class RestaurantControllerTests {
         List<Restaurant>restaurants=new ArrayList<>();
         Restaurant restaurant=Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("Bob zip")
                 .address("Seoul")
                 .build();
         restaurants.add(restaurant);
 
         //가짜 객체 생성->@MockBean의 사용으로 controller만 테스트할 수 있게됨
-        given(restaurantService.getRestaurants()).willReturn(restaurants);
+        given(restaurantService.getRestaurants("Seoul",1L)).willReturn(restaurants);
 
-        mvc.perform(get("/restaurants"))
+        mvc.perform(get("/restaurants?region=Seoul&category=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"name\":\"Bob zip\"")))
@@ -60,6 +61,7 @@ class RestaurantControllerTests {
     public void detailWithExisted() throws Exception {
         Restaurant restaurant=Restaurant.builder()
                 .id(1004L)
+                .categoryId(1L)
                 .name("Bob zip")
                 .address("Seoul")
                 .build();
