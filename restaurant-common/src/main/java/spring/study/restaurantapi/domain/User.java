@@ -29,6 +29,8 @@ public class User {
     @NotEmpty
     private String name;
 
+    private String password;
+
     public boolean isAdmin(){
         return level>=100;
     }
