@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import spring.study.restaurantapi.domain.Review;
 import spring.study.restaurantapi.domain.ReviewRepository;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -25,13 +24,7 @@ class ReviewServiceTests {
 
     @Test
     public void addReview(){
-        Review review=Review.builder()
-                .name("Dong")
-                .score(5)
-                .description("맛있어요")
-                .build();
-
-        reviewService.addReview(123L,review);
+        reviewService.addReview(123L,"Dong",5,"맛있어요");
 
         verify(reviewRepository).save(any());
     }

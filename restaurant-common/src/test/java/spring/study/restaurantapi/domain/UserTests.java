@@ -22,4 +22,6 @@ class UserTests {
 
         assertEquals(user.isActive(),false);
     }
+
+
 }

@@ -1,7 +1,9 @@
 package spring.study.restaurantapi.controller;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +23,19 @@ public class ReviewController {
 
     @PostMapping("/restaurants/{restaurantId}/reviews")
     public ResponseEntity<?> create(
+            Authentication authentication,
             @Valid @RequestBody Review resource,
             @PathVariable Long restaurantId) throws URISyntaxException {
-        Review review = reviewService.addReview(restaurantId,resource);
+        Claims claims= (Claims) authentication.getPrincipal();
+        String name=claims.get("name",String.class);
+        Integer score=resource.getScore();
+        String description=resource.getDescription();
+
+        Review review = reviewService.addReview(
+                restaurantId,name,score,description);
+
         String uri="/restaurants/"+restaurantId+"/reviews/"+review.getId();
+
         return ResponseEntity.created(new URI(uri)).body("{}");
     }
 

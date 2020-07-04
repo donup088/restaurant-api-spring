@@ -10,4 +10,5 @@ public class RestaurantCustomerApiApplication {
 		SpringApplication.run(RestaurantCustomerApiApplication.class, args);
 	}
 
+
 }
